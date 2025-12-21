@@ -1,4 +1,11 @@
-import { component$, useComputed$, useContext, useSignal } from '@qwik.dev/core';
+import {
+	$,
+	component$,
+	useComputed$,
+	useContext,
+	useSignal,
+	useVisibleTask$,
+} from '@qwik.dev/core';
 import { DocumentHead, routeLoader$ } from '@qwik.dev/router';
 import { _ } from 'compiled-i18n';
 import Alert from '~/components/alert/Alert';
@@ -9,8 +16,13 @@ import { Image } from '~/components/image/image';
 import Price from '~/components/products/Price';
 import StockLevelLabel from '~/components/stock-level-label/StockLevelLabel';
 import TopReviews from '~/components/top-reviews/TopReviews';
-import { APP_STATE } from '~/constants';
+import { APP_STATE, CUSTOMER_NOT_DEFINED_ID } from '~/constants';
 import { Order, OrderLine } from '~/generated/graphql';
+import {
+	createFavoriteMutation,
+	deleteFavoriteMutation,
+	getFavoriteQuery,
+} from '~/providers/shop/favorites/favorites';
 import { addItemToOrderMutation } from '~/providers/shop/orders/order';
 import { getProductBySlug } from '~/providers/shop/products/products';
 import { Variant } from '~/types';
@@ -50,6 +62,23 @@ export default component$(() => {
 			result[variant.id] = orderLine?.quantity || 0;
 		});
 		return result;
+	});
+
+	const favoriteId = useSignal<string | undefined>(undefined);
+	useVisibleTask$(() => {
+		getFavoriteQuery(productSignal.value.id).then((fav) => {
+			favoriteId.value = fav?.id;
+		});
+	});
+
+	const toggleFavorite = $(async () => {
+		if (favoriteId.value) {
+			await deleteFavoriteMutation(favoriteId.value);
+			favoriteId.value = undefined;
+		} else {
+			const favorite = await createFavoriteMutation(productSignal.value.id);
+			favoriteId.value = favorite.id;
+		}
 	});
 
 	return (
@@ -142,7 +171,7 @@ export default component$(() => {
 								<div class="flex sm:flex-col1 align-baseline">
 									<button
 										class={{
-											'max-w-xs flex-1 transition-colors border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-primary-500 sm:w-full': true,
+											'max-w-xs flex-1 transition-colors border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white focus:outline-none sm:w-full': true,
 											'bg-primary-600 hover:bg-primary-700':
 												quantitySignal.value[selectedVariantIdSignal.value] === 0,
 											'bg-green-600 active:bg-green-700 hover:bg-green-700':
@@ -174,13 +203,16 @@ export default component$(() => {
 											_`Add to cart`
 										)}
 									</button>
-									<button
-										type="button"
-										class="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500"
-									>
-										<HeartIcon />
-										<span class="sr-only">{_`Add to favorites`}</span>
-									</button>
+									{appState.customer.id !== CUSTOMER_NOT_DEFINED_ID && (
+										<button
+											type="button"
+											class="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+											onClick$={toggleFavorite}
+										>
+											<HeartIcon filled={favoriteId.value !== undefined} />
+											<span class="sr-only">{_`Add to favorites`}</span>
+										</button>
+									)}
 								</div>
 							</div>
 							<div class="mt-2 flex items-center space-x-2">

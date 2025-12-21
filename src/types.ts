@@ -193,10 +193,13 @@ export type FacetWithValues = {
 
 export type Review = {
 	id: number;
-	title: string;
 	rating: number;
-	content: string;
-	author: string;
+	comment: string;
+	author: {
+		title: string;
+		firstName: string;
+		lastName: string;
+	};
 	date: string;
 	datetime: string;
 };

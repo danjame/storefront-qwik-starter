@@ -1,5 +1,10 @@
 union ActiveOrderResult = NoActiveOrderError | Order
 
+input AddItemInput {
+	productVariantId: ID!
+	quantity: Int!
+}
+
 union AddPaymentToOrderResult =
 	| IneligiblePaymentMethodError
 	| NoActiveOrderError
@@ -97,6 +102,8 @@ type AuthenticationMethod implements Node {
 union AuthenticationResult = CurrentUser | InvalidCredentialsError | NotVerifiedError
 
 type BooleanCustomFieldConfig implements CustomField {
+	deprecated: Boolean
+	deprecationReason: String
 	description: [LocalizedString!]
 	internal: Boolean
 	label: [LocalizedString!]
@@ -394,6 +401,17 @@ input CreateCustomerInput {
 	lastName: String!
 	phoneNumber: String
 	title: String
+}
+
+input CreateFavoriteInput {
+	productId: ID!
+}
+
+input CreateReviewInput {
+	comment: String!
+	orderId: String!
+	productVariantId: String!
+	rating: Int!
 }
 
 """
@@ -1203,6 +1221,8 @@ type CurrentUserChannel {
 }
 
 interface CustomField {
+	deprecated: Boolean
+	deprecationReason: String
 	description: [LocalizedString!]
 	internal: Boolean
 	label: [LocalizedString!]
@@ -1340,6 +1360,8 @@ Expects the same validation formats as the `<input type="datetime-local">` HTML 
 See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local#Additional_attributes
 """
 type DateTimeCustomFieldConfig implements CustomField {
+	deprecated: Boolean
+	deprecationReason: String
 	description: [LocalizedString!]
 	internal: Boolean
 	label: [LocalizedString!]
@@ -1615,7 +1637,62 @@ type FacetValueTranslation {
 	updatedAt: DateTime!
 }
 
+type Favorite implements Node {
+	createdAt: DateTime!
+	id: ID!
+	product: Product!
+	updatedAt: DateTime!
+}
+
+input FavoriteFilterParameter {
+	_and: [FavoriteFilterParameter!]
+	_or: [FavoriteFilterParameter!]
+	createdAt: DateOperators
+	id: IDOperators
+	updatedAt: DateOperators
+}
+
+type FavoriteList implements PaginatedList {
+	items: [Favorite!]!
+	totalItems: Int!
+}
+
+input FavoriteListOptions {
+	"""
+	Allows the results to be filtered
+	"""
+	filter: FavoriteFilterParameter
+
+	"""
+	Specifies whether multiple top-level "filter" fields should be combined with a logical AND or OR operation. Defaults to AND.
+	"""
+	filterOperator: LogicalOperator
+
+	"""
+	Skips the first n results, for use in pagination
+	"""
+	skip: Int
+
+	"""
+	Specifies which properties to sort the results by
+	"""
+	sort: FavoriteSortParameter
+
+	"""
+	Takes n results, for use in pagination
+	"""
+	take: Int
+}
+
+input FavoriteSortParameter {
+	createdAt: SortOrder
+	id: SortOrder
+	updatedAt: SortOrder
+}
+
 type FloatCustomFieldConfig implements CustomField {
+	deprecated: Boolean
+	deprecationReason: String
 	description: [LocalizedString!]
 	internal: Boolean
 	label: [LocalizedString!]
@@ -1826,6 +1903,8 @@ type InsufficientStockError implements ErrorResult {
 }
 
 type IntCustomFieldConfig implements CustomField {
+	deprecated: Boolean
+	deprecationReason: String
 	description: [LocalizedString!]
 	internal: Boolean
 	label: [LocalizedString!]
@@ -2664,6 +2743,8 @@ enum LanguageCode {
 }
 
 type LocaleStringCustomFieldConfig implements CustomField {
+	deprecated: Boolean
+	deprecationReason: String
 	description: [LocalizedString!]
 	internal: Boolean
 	label: [LocalizedString!]
@@ -2679,6 +2760,8 @@ type LocaleStringCustomFieldConfig implements CustomField {
 }
 
 type LocaleTextCustomFieldConfig implements CustomField {
+	deprecated: Boolean
+	deprecationReason: String
 	description: [LocalizedString!]
 	internal: Boolean
 	label: [LocalizedString!]
@@ -2721,6 +2804,11 @@ type Mutation {
 	addItemToOrder(productVariantId: ID!, quantity: Int!): UpdateOrderItemsResult!
 
 	"""
+	Adds mutliple items to the Order. Returns a list of errors for each item that failed to add. It will still add successful items.
+	"""
+	addItemsToOrder(inputs: [AddItemInput!]!): UpdateMultipleOrderItemsResult!
+
+	"""
 	Add a Payment to the Order
 	"""
 	addPaymentToOrder(input: PaymentInput!): AddPaymentToOrderResult!
@@ -2744,12 +2832,15 @@ type Mutation {
 	Create a new Customer Address
 	"""
 	createCustomerAddress(input: CreateAddressInput!): Address!
+	createFavorite(input: CreateFavoriteInput!): Favorite!
+	createReview(input: CreateReviewInput!): Review!
 	createStripePaymentIntent: String
 
 	"""
 	Delete an existing Address
 	"""
 	deleteCustomerAddress(id: ID!): Success!
+	deleteFavorite(id: ID!): DeletionResponse!
 
 	"""
 	Authenticates the user using the native authentication strategy. This mutation is an alias for authenticate({ native: { ... }})
@@ -3755,6 +3846,11 @@ enum Permission {
 	ReadCustomerGroup
 
 	"""
+	Grants permission to read DashboardGlobalViews
+	"""
+	ReadDashboardGlobalViews
+
+	"""
 	Grants permission to read Facet
 	"""
 	ReadFacet
@@ -3943,6 +4039,11 @@ enum Permission {
 	Grants permission to update Zone
 	"""
 	UpdateZone
+
+	"""
+	Grants permission to write DashboardGlobalViews
+	"""
+	WriteDashboardGlobalViews
 }
 
 """
@@ -4229,6 +4330,24 @@ type ProvinceList implements PaginatedList {
 	totalItems: Int!
 }
 
+type PublicPaymentMethod {
+	code: String!
+	customFields: JSON
+	description: String
+	id: ID!
+	name: String!
+	translations: [PaymentMethodTranslation!]!
+}
+
+type PublicShippingMethod {
+	code: String!
+	customFields: JSON
+	description: String
+	id: ID!
+	name: String!
+	translations: [ShippingMethodTranslation!]!
+}
+
 type Query {
 	"""
 	The active Channel
@@ -4246,6 +4365,16 @@ type Query {
 	query will once again return `null`.
 	"""
 	activeOrder: Order
+
+	"""
+	Get active payment methods
+	"""
+	activePaymentMethods: [PublicPaymentMethod]!
+
+	"""
+	Get active shipping methods
+	"""
+	activeShippingMethods: [PublicShippingMethod]!
 
 	"""
 	An array of supported Countries
@@ -4281,6 +4410,8 @@ type Query {
 	A list of Facets available to the shop
 	"""
 	facets(options: FacetListOptions): FacetList!
+	favorite(productId: ID!): Favorite
+	favorites(customerId: ID, options: FavoriteListOptions): FavoriteList!
 	generateBraintreeClientToken(includeCustomerId: Boolean, orderId: ID): String
 
 	"""
@@ -4316,6 +4447,8 @@ type Query {
 	Get a list of Products
 	"""
 	products(options: ProductListOptions): ProductList!
+	review(orderId: ID!, productVariantId: ID!): Review
+	reviews(options: ReviewListOptions, productId: ID!): ReviewList!
 
 	"""
 	Search Products based on the criteria set by the `SearchInput`
@@ -4389,6 +4522,8 @@ input RegisterCustomerInput {
 }
 
 type RelationCustomFieldConfig implements CustomField {
+	deprecated: Boolean
+	deprecationReason: String
 	description: [LocalizedString!]
 	entity: String!
 	internal: Boolean
@@ -4420,6 +4555,66 @@ union ResetPasswordResult =
 	| PasswordResetTokenExpiredError
 	| PasswordResetTokenInvalidError
 	| PasswordValidationError
+
+type Review implements Node {
+	approved: Boolean!
+	comment: String!
+	createdAt: DateTime!
+	id: ID!
+	rating: Int!
+	updatedAt: DateTime!
+}
+
+input ReviewFilterParameter {
+	_and: [ReviewFilterParameter!]
+	_or: [ReviewFilterParameter!]
+	approved: BooleanOperators
+	comment: StringOperators
+	createdAt: DateOperators
+	id: IDOperators
+	rating: NumberOperators
+	updatedAt: DateOperators
+}
+
+type ReviewList implements PaginatedList {
+	items: [Review!]!
+	totalItems: Int!
+}
+
+input ReviewListOptions {
+	"""
+	Allows the results to be filtered
+	"""
+	filter: ReviewFilterParameter
+
+	"""
+	Specifies whether multiple top-level "filter" fields should be combined with a logical AND or OR operation. Defaults to AND.
+	"""
+	filterOperator: LogicalOperator
+
+	"""
+	Skips the first n results, for use in pagination
+	"""
+	skip: Int
+
+	"""
+	Specifies which properties to sort the results by
+	"""
+	sort: ReviewSortParameter
+
+	"""
+	Takes n results, for use in pagination
+	"""
+	take: Int
+}
+
+input ReviewSortParameter {
+	comment: SortOrder
+	createdAt: SortOrder
+	id: SortOrder
+	rating: SortOrder
+	updatedAt: SortOrder
+}
 
 type Role implements Node {
 	channels: [Channel!]!
@@ -4591,6 +4786,8 @@ enum SortOrder {
 }
 
 type StringCustomFieldConfig implements CustomField {
+	deprecated: Boolean
+	deprecationReason: String
 	description: [LocalizedString!]
 	internal: Boolean
 	label: [LocalizedString!]
@@ -4645,6 +4842,8 @@ type StringStructFieldConfig implements StructField {
 }
 
 type StructCustomFieldConfig implements CustomField {
+	deprecated: Boolean
+	deprecationReason: String
 	description: [LocalizedString!]
 	fields: [StructFieldConfig!]!
 	internal: Boolean
@@ -4739,6 +4938,8 @@ type TaxRateList implements PaginatedList {
 }
 
 type TextCustomFieldConfig implements CustomField {
+	deprecated: Boolean
+	deprecationReason: String
 	description: [LocalizedString!]
 	internal: Boolean
 	label: [LocalizedString!]
@@ -4805,9 +5006,28 @@ union UpdateCustomerPasswordResult =
 	| PasswordValidationError
 	| Success
 
+"""
+Returned when multiple items are added to an Order.
+The errorResults array contains the errors that occurred for each item, if any.
+"""
+type UpdateMultipleOrderItemsResult {
+	errorResults: [UpdateOrderItemErrorResult!]!
+	order: Order!
+}
+
 input UpdateOrderInput {
 	customFields: JSON
 }
+
+"""
+Union type of all possible errors that can occur when adding or removing items from an Order.
+"""
+union UpdateOrderItemErrorResult =
+	| InsufficientStockError
+	| NegativeQuantityError
+	| OrderInterceptorError
+	| OrderLimitError
+	| OrderModificationError
 
 union UpdateOrderItemsResult =
 	| InsufficientStockError

@@ -33,10 +33,12 @@ export const useAvailableCountriesLoader = routeLoader$(async () => {
 	return await getAvailableCountriesQuery();
 });
 
-export const onRequest: RequestHandler = ({ request, query, locale }) => {
-	const lang = query.get('lang') || request.headers.get('accept-language');
+export const onRequest: RequestHandler = ({ request, query, locale, cookie }) => {
+	const lang =
+		query.get('lang') || cookie.get('lang')?.value || request.headers.get('accept-language');
 	const guessedLocale = guessLocale(lang);
 	locale(guessedLocale);
+	cookie.set('lang', guessedLocale, { path: '/', maxAge: 60 * 60 * 24 * 365 });
 };
 
 export default component$(() => {

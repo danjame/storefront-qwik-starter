@@ -30,6 +30,11 @@ export type Scalars = {
 
 export type ActiveOrderResult = NoActiveOrderError | Order;
 
+export type AddItemInput = {
+	productVariantId: Scalars['ID']['input'];
+	quantity: Scalars['Int']['input'];
+};
+
 export type AddPaymentToOrderResult =
 	| IneligiblePaymentMethodError
 	| NoActiveOrderError
@@ -134,6 +139,8 @@ export type AuthenticationResult = CurrentUser | InvalidCredentialsError | NotVe
 
 export type BooleanCustomFieldConfig = CustomField & {
 	__typename?: 'BooleanCustomFieldConfig';
+	deprecated?: Maybe<Scalars['Boolean']['output']>;
+	deprecationReason?: Maybe<Scalars['String']['output']>;
 	description?: Maybe<Array<LocalizedString>>;
 	internal?: Maybe<Scalars['Boolean']['output']>;
 	label?: Maybe<Array<LocalizedString>>;
@@ -421,6 +428,17 @@ export type CreateCustomerInput = {
 	lastName: Scalars['String']['input'];
 	phoneNumber?: InputMaybe<Scalars['String']['input']>;
 	title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateFavoriteInput = {
+	productId: Scalars['ID']['input'];
+};
+
+export type CreateReviewInput = {
+	comment: Scalars['String']['input'];
+	orderId: Scalars['String']['input'];
+	productVariantId: Scalars['String']['input'];
+	rating: Scalars['Int']['input'];
 };
 
 /**
@@ -763,6 +781,8 @@ export type CurrentUserChannel = {
 };
 
 export type CustomField = {
+	deprecated?: Maybe<Scalars['Boolean']['output']>;
+	deprecationReason?: Maybe<Scalars['String']['output']>;
 	description?: Maybe<Array<LocalizedString>>;
 	internal?: Maybe<Scalars['Boolean']['output']>;
 	label?: Maybe<Array<LocalizedString>>;
@@ -889,6 +909,8 @@ export type DateRange = {
  */
 export type DateTimeCustomFieldConfig = CustomField & {
 	__typename?: 'DateTimeCustomFieldConfig';
+	deprecated?: Maybe<Scalars['Boolean']['output']>;
+	deprecationReason?: Maybe<Scalars['String']['output']>;
 	description?: Maybe<Array<LocalizedString>>;
 	internal?: Maybe<Scalars['Boolean']['output']>;
 	label?: Maybe<Array<LocalizedString>>;
@@ -1143,8 +1165,51 @@ export type FacetValueTranslation = {
 	updatedAt: Scalars['DateTime']['output'];
 };
 
+export type Favorite = Node & {
+	__typename?: 'Favorite';
+	createdAt: Scalars['DateTime']['output'];
+	id: Scalars['ID']['output'];
+	product: Product;
+	updatedAt: Scalars['DateTime']['output'];
+};
+
+export type FavoriteFilterParameter = {
+	_and?: InputMaybe<Array<FavoriteFilterParameter>>;
+	_or?: InputMaybe<Array<FavoriteFilterParameter>>;
+	createdAt?: InputMaybe<DateOperators>;
+	id?: InputMaybe<IdOperators>;
+	updatedAt?: InputMaybe<DateOperators>;
+};
+
+export type FavoriteList = PaginatedList & {
+	__typename?: 'FavoriteList';
+	items: Array<Favorite>;
+	totalItems: Scalars['Int']['output'];
+};
+
+export type FavoriteListOptions = {
+	/** Allows the results to be filtered */
+	filter?: InputMaybe<FavoriteFilterParameter>;
+	/** Specifies whether multiple top-level "filter" fields should be combined with a logical AND or OR operation. Defaults to AND. */
+	filterOperator?: InputMaybe<LogicalOperator>;
+	/** Skips the first n results, for use in pagination */
+	skip?: InputMaybe<Scalars['Int']['input']>;
+	/** Specifies which properties to sort the results by */
+	sort?: InputMaybe<FavoriteSortParameter>;
+	/** Takes n results, for use in pagination */
+	take?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type FavoriteSortParameter = {
+	createdAt?: InputMaybe<SortOrder>;
+	id?: InputMaybe<SortOrder>;
+	updatedAt?: InputMaybe<SortOrder>;
+};
+
 export type FloatCustomFieldConfig = CustomField & {
 	__typename?: 'FloatCustomFieldConfig';
+	deprecated?: Maybe<Scalars['Boolean']['output']>;
+	deprecationReason?: Maybe<Scalars['String']['output']>;
 	description?: Maybe<Array<LocalizedString>>;
 	internal?: Maybe<Scalars['Boolean']['output']>;
 	label?: Maybe<Array<LocalizedString>>;
@@ -1344,6 +1409,8 @@ export type InsufficientStockError = ErrorResult & {
 
 export type IntCustomFieldConfig = CustomField & {
 	__typename?: 'IntCustomFieldConfig';
+	deprecated?: Maybe<Scalars['Boolean']['output']>;
+	deprecationReason?: Maybe<Scalars['String']['output']>;
 	description?: Maybe<Array<LocalizedString>>;
 	internal?: Maybe<Scalars['Boolean']['output']>;
 	label?: Maybe<Array<LocalizedString>>;
@@ -1709,6 +1776,8 @@ export const LanguageCode = {
 export type LanguageCode = (typeof LanguageCode)[keyof typeof LanguageCode];
 export type LocaleStringCustomFieldConfig = CustomField & {
 	__typename?: 'LocaleStringCustomFieldConfig';
+	deprecated?: Maybe<Scalars['Boolean']['output']>;
+	deprecationReason?: Maybe<Scalars['String']['output']>;
 	description?: Maybe<Array<LocalizedString>>;
 	internal?: Maybe<Scalars['Boolean']['output']>;
 	label?: Maybe<Array<LocalizedString>>;
@@ -1725,6 +1794,8 @@ export type LocaleStringCustomFieldConfig = CustomField & {
 
 export type LocaleTextCustomFieldConfig = CustomField & {
 	__typename?: 'LocaleTextCustomFieldConfig';
+	deprecated?: Maybe<Scalars['Boolean']['output']>;
+	deprecationReason?: Maybe<Scalars['String']['output']>;
 	description?: Maybe<Array<LocalizedString>>;
 	internal?: Maybe<Scalars['Boolean']['output']>;
 	label?: Maybe<Array<LocalizedString>>;
@@ -1760,6 +1831,8 @@ export type Mutation = {
 	__typename?: 'Mutation';
 	/** Adds an item to the Order. If custom fields are defined on the OrderLine entity, a third argument 'customFields' will be available. */
 	addItemToOrder: UpdateOrderItemsResult;
+	/** Adds mutliple items to the Order. Returns a list of errors for each item that failed to add. It will still add successful items. */
+	addItemsToOrder: UpdateMultipleOrderItemsResult;
 	/** Add a Payment to the Order */
 	addPaymentToOrder: AddPaymentToOrderResult;
 	/** Adjusts an OrderLine. If custom fields are defined on the OrderLine entity, a third argument 'customFields' of type `OrderLineCustomFieldsInput` will be available. */
@@ -1770,9 +1843,12 @@ export type Mutation = {
 	authenticate: AuthenticationResult;
 	/** Create a new Customer Address */
 	createCustomerAddress: Address;
+	createFavorite: Favorite;
+	createReview: Review;
 	createStripePaymentIntent?: Maybe<Scalars['String']['output']>;
 	/** Delete an existing Address */
 	deleteCustomerAddress: Success;
+	deleteFavorite: DeletionResponse;
 	/**
 	 * Authenticates the user using the native authentication strategy. This mutation is an alias for authenticate({ native: { ... }})
 	 *
@@ -1864,6 +1940,10 @@ export type MutationAddItemToOrderArgs = {
 	quantity: Scalars['Int']['input'];
 };
 
+export type MutationAddItemsToOrderArgs = {
+	inputs: Array<AddItemInput>;
+};
+
 export type MutationAddPaymentToOrderArgs = {
 	input: PaymentInput;
 };
@@ -1886,7 +1966,19 @@ export type MutationCreateCustomerAddressArgs = {
 	input: CreateAddressInput;
 };
 
+export type MutationCreateFavoriteArgs = {
+	input: CreateFavoriteInput;
+};
+
+export type MutationCreateReviewArgs = {
+	input: CreateReviewInput;
+};
+
 export type MutationDeleteCustomerAddressArgs = {
+	id: Scalars['ID']['input'];
+};
+
+export type MutationDeleteFavoriteArgs = {
 	id: Scalars['ID']['input'];
 };
 
@@ -2564,6 +2656,8 @@ export const Permission = {
 	ReadCustomer: 'ReadCustomer',
 	/** Grants permission to read CustomerGroup */
 	ReadCustomerGroup: 'ReadCustomerGroup',
+	/** Grants permission to read DashboardGlobalViews */
+	ReadDashboardGlobalViews: 'ReadDashboardGlobalViews',
 	/** Grants permission to read Facet */
 	ReadFacet: 'ReadFacet',
 	/** Grants permission to read Order */
@@ -2640,6 +2734,8 @@ export const Permission = {
 	UpdateTaxRate: 'UpdateTaxRate',
 	/** Grants permission to update Zone */
 	UpdateZone: 'UpdateZone',
+	/** Grants permission to write DashboardGlobalViews */
+	WriteDashboardGlobalViews: 'WriteDashboardGlobalViews',
 } as const;
 
 export type Permission = (typeof Permission)[keyof typeof Permission];
@@ -2912,6 +3008,26 @@ export type ProvinceList = PaginatedList & {
 	totalItems: Scalars['Int']['output'];
 };
 
+export type PublicPaymentMethod = {
+	__typename?: 'PublicPaymentMethod';
+	code: Scalars['String']['output'];
+	customFields?: Maybe<Scalars['JSON']['output']>;
+	description?: Maybe<Scalars['String']['output']>;
+	id: Scalars['ID']['output'];
+	name: Scalars['String']['output'];
+	translations: Array<PaymentMethodTranslation>;
+};
+
+export type PublicShippingMethod = {
+	__typename?: 'PublicShippingMethod';
+	code: Scalars['String']['output'];
+	customFields?: Maybe<Scalars['JSON']['output']>;
+	description?: Maybe<Scalars['String']['output']>;
+	id: Scalars['ID']['output'];
+	name: Scalars['String']['output'];
+	translations: Array<ShippingMethodTranslation>;
+};
+
 export type Query = {
 	__typename?: 'Query';
 	/** The active Channel */
@@ -2924,6 +3040,10 @@ export type Query = {
 	 * query will once again return `null`.
 	 */
 	activeOrder?: Maybe<Order>;
+	/** Get active payment methods */
+	activePaymentMethods: Array<Maybe<PublicPaymentMethod>>;
+	/** Get active shipping methods */
+	activeShippingMethods: Array<Maybe<PublicShippingMethod>>;
 	/** An array of supported Countries */
 	availableCountries: Array<Country>;
 	/** Returns a Collection either by its id or slug. If neither 'id' nor 'slug' is specified, an error will result. */
@@ -2938,6 +3058,8 @@ export type Query = {
 	facet?: Maybe<Facet>;
 	/** A list of Facets available to the shop */
 	facets: FacetList;
+	favorite?: Maybe<Favorite>;
+	favorites: FavoriteList;
 	generateBraintreeClientToken?: Maybe<Scalars['String']['output']>;
 	/** Returns information about the current authenticated User */
 	me?: Maybe<CurrentUser>;
@@ -2959,6 +3081,8 @@ export type Query = {
 	product?: Maybe<Product>;
 	/** Get a list of Products */
 	products: ProductList;
+	review?: Maybe<Review>;
+	reviews: ReviewList;
 	/** Search Products based on the criteria set by the `SearchInput` */
 	search: SearchResponse;
 };
@@ -2978,6 +3102,15 @@ export type QueryFacetArgs = {
 
 export type QueryFacetsArgs = {
 	options?: InputMaybe<FacetListOptions>;
+};
+
+export type QueryFavoriteArgs = {
+	productId: Scalars['ID']['input'];
+};
+
+export type QueryFavoritesArgs = {
+	customerId?: InputMaybe<Scalars['ID']['input']>;
+	options?: InputMaybe<FavoriteListOptions>;
 };
 
 export type QueryGenerateBraintreeClientTokenArgs = {
@@ -3000,6 +3133,16 @@ export type QueryProductArgs = {
 
 export type QueryProductsArgs = {
 	options?: InputMaybe<ProductListOptions>;
+};
+
+export type QueryReviewArgs = {
+	orderId: Scalars['ID']['input'];
+	productVariantId: Scalars['ID']['input'];
+};
+
+export type QueryReviewsArgs = {
+	options?: InputMaybe<ReviewListOptions>;
+	productId: Scalars['ID']['input'];
 };
 
 export type QuerySearchArgs = {
@@ -3076,6 +3219,8 @@ export type RegisterCustomerInput = {
 
 export type RelationCustomFieldConfig = CustomField & {
 	__typename?: 'RelationCustomFieldConfig';
+	deprecated?: Maybe<Scalars['Boolean']['output']>;
+	deprecationReason?: Maybe<Scalars['String']['output']>;
 	description?: Maybe<Array<LocalizedString>>;
 	entity: Scalars['String']['output'];
 	internal?: Maybe<Scalars['Boolean']['output']>;
@@ -3107,6 +3252,54 @@ export type ResetPasswordResult =
 	| PasswordResetTokenExpiredError
 	| PasswordResetTokenInvalidError
 	| PasswordValidationError;
+
+export type Review = Node & {
+	__typename?: 'Review';
+	approved: Scalars['Boolean']['output'];
+	comment: Scalars['String']['output'];
+	createdAt: Scalars['DateTime']['output'];
+	id: Scalars['ID']['output'];
+	rating: Scalars['Int']['output'];
+	updatedAt: Scalars['DateTime']['output'];
+};
+
+export type ReviewFilterParameter = {
+	_and?: InputMaybe<Array<ReviewFilterParameter>>;
+	_or?: InputMaybe<Array<ReviewFilterParameter>>;
+	approved?: InputMaybe<BooleanOperators>;
+	comment?: InputMaybe<StringOperators>;
+	createdAt?: InputMaybe<DateOperators>;
+	id?: InputMaybe<IdOperators>;
+	rating?: InputMaybe<NumberOperators>;
+	updatedAt?: InputMaybe<DateOperators>;
+};
+
+export type ReviewList = PaginatedList & {
+	__typename?: 'ReviewList';
+	items: Array<Review>;
+	totalItems: Scalars['Int']['output'];
+};
+
+export type ReviewListOptions = {
+	/** Allows the results to be filtered */
+	filter?: InputMaybe<ReviewFilterParameter>;
+	/** Specifies whether multiple top-level "filter" fields should be combined with a logical AND or OR operation. Defaults to AND. */
+	filterOperator?: InputMaybe<LogicalOperator>;
+	/** Skips the first n results, for use in pagination */
+	skip?: InputMaybe<Scalars['Int']['input']>;
+	/** Specifies which properties to sort the results by */
+	sort?: InputMaybe<ReviewSortParameter>;
+	/** Takes n results, for use in pagination */
+	take?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type ReviewSortParameter = {
+	comment?: InputMaybe<SortOrder>;
+	createdAt?: InputMaybe<SortOrder>;
+	id?: InputMaybe<SortOrder>;
+	rating?: InputMaybe<SortOrder>;
+	updatedAt?: InputMaybe<SortOrder>;
+};
 
 export type Role = Node & {
 	__typename?: 'Role';
@@ -3281,6 +3474,8 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
 export type StringCustomFieldConfig = CustomField & {
 	__typename?: 'StringCustomFieldConfig';
+	deprecated?: Maybe<Scalars['Boolean']['output']>;
+	deprecationReason?: Maybe<Scalars['String']['output']>;
 	description?: Maybe<Array<LocalizedString>>;
 	internal?: Maybe<Scalars['Boolean']['output']>;
 	label?: Maybe<Array<LocalizedString>>;
@@ -3334,6 +3529,8 @@ export type StringStructFieldConfig = StructField & {
 
 export type StructCustomFieldConfig = CustomField & {
 	__typename?: 'StructCustomFieldConfig';
+	deprecated?: Maybe<Scalars['Boolean']['output']>;
+	deprecationReason?: Maybe<Scalars['String']['output']>;
 	description?: Maybe<Array<LocalizedString>>;
 	fields: Array<StructFieldConfig>;
 	internal?: Maybe<Scalars['Boolean']['output']>;
@@ -3435,6 +3632,8 @@ export type TaxRateList = PaginatedList & {
 
 export type TextCustomFieldConfig = CustomField & {
 	__typename?: 'TextCustomFieldConfig';
+	deprecated?: Maybe<Scalars['Boolean']['output']>;
+	deprecationReason?: Maybe<Scalars['String']['output']>;
 	description?: Maybe<Array<LocalizedString>>;
 	internal?: Maybe<Scalars['Boolean']['output']>;
 	label?: Maybe<Array<LocalizedString>>;
@@ -3502,9 +3701,27 @@ export type UpdateCustomerPasswordResult =
 	| PasswordValidationError
 	| Success;
 
+/**
+ * Returned when multiple items are added to an Order.
+ * The errorResults array contains the errors that occurred for each item, if any.
+ */
+export type UpdateMultipleOrderItemsResult = {
+	__typename?: 'UpdateMultipleOrderItemsResult';
+	errorResults: Array<UpdateOrderItemErrorResult>;
+	order: Order;
+};
+
 export type UpdateOrderInput = {
 	customFields?: InputMaybe<Scalars['JSON']['input']>;
 };
+
+/** Union type of all possible errors that can occur when adding or removing items from an Order. */
+export type UpdateOrderItemErrorResult =
+	| InsufficientStockError
+	| NegativeQuantityError
+	| OrderInterceptorError
+	| OrderLimitError
+	| OrderModificationError;
 
 export type UpdateOrderItemsResult =
 	| InsufficientStockError
@@ -4325,6 +4542,77 @@ export type CreateCustomerAddressMutationMutation = {
 		defaultShippingAddress?: boolean | null;
 		defaultBillingAddress?: boolean | null;
 		country: { __typename: 'Country'; id: string; code: string; name: string };
+	};
+};
+
+export type FavoriteQueryVariables = Exact<{
+	id: Scalars['ID']['input'];
+}>;
+
+export type FavoriteQuery = {
+	__typename?: 'Query';
+	favorite?: {
+		__typename?: 'Favorite';
+		id: string;
+		product: {
+			__typename?: 'Product';
+			id: string;
+			name: string;
+			description: string;
+			collections: Array<{
+				__typename?: 'Collection';
+				id: string;
+				slug: string;
+				name: string;
+				breadcrumbs: Array<{
+					__typename?: 'CollectionBreadcrumb';
+					id: string;
+					name: string;
+					slug: string;
+				}>;
+			}>;
+			facetValues: Array<{
+				__typename?: 'FacetValue';
+				id: string;
+				code: string;
+				name: string;
+				facet: { __typename?: 'Facet'; id: string; code: string; name: string };
+			}>;
+			featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
+			assets: Array<{ __typename?: 'Asset'; id: string; preview: string }>;
+			variants: Array<{
+				__typename?: 'ProductVariant';
+				id: string;
+				name: string;
+				priceWithTax: any;
+				currencyCode: CurrencyCode;
+				sku: string;
+				stockLevel: string;
+				featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
+			}>;
+		};
+	} | null;
+};
+
+export type CreateFavoriteMutationVariables = Exact<{
+	id: Scalars['ID']['input'];
+}>;
+
+export type CreateFavoriteMutation = {
+	__typename?: 'Mutation';
+	createFavorite: { __typename?: 'Favorite'; id: string };
+};
+
+export type DeleteFavoriteMutationVariables = Exact<{
+	id: Scalars['ID']['input'];
+}>;
+
+export type DeleteFavoriteMutation = {
+	__typename?: 'Mutation';
+	deleteFavorite: {
+		__typename: 'DeletionResponse';
+		message?: string | null;
+		result: DeletionResult;
 	};
 };
 
@@ -5294,6 +5582,33 @@ export type SearchQuery = {
 	};
 };
 
+export type ReviewQueryVariables = Exact<{
+	orderId: Scalars['ID']['input'];
+	productVariantId: Scalars['ID']['input'];
+}>;
+
+export type ReviewQuery = {
+	__typename?: 'Query';
+	review?: { __typename?: 'Review'; id: string; rating: number } | null;
+};
+
+export type CreateReviewMutationVariables = Exact<{
+	input: CreateReviewInput;
+}>;
+
+export type CreateReviewMutation = {
+	__typename?: 'Mutation';
+	createReview: {
+		__typename?: 'Review';
+		id: string;
+		rating: number;
+		comment: string;
+		approved: boolean;
+		createdAt: any;
+		updatedAt: any;
+	};
+};
+
 export const AddressFragmentDoc = gql`
 	fragment Address on Address {
 		id
@@ -5785,6 +6100,74 @@ export const CreateCustomerAddressMutationDocument = gql`
 	}
 	${AddressFragmentDoc}
 `;
+export const FavoriteDocument = gql`
+	query favorite($id: ID!) {
+		favorite(productId: $id) {
+			id
+			product {
+				id
+				name
+				description
+				collections {
+					id
+					slug
+					name
+					breadcrumbs {
+						id
+						name
+						slug
+					}
+				}
+				facetValues {
+					facet {
+						id
+						code
+						name
+					}
+					id
+					code
+					name
+				}
+				featuredAsset {
+					id
+					preview
+				}
+				assets {
+					id
+					preview
+				}
+				variants {
+					id
+					name
+					priceWithTax
+					currencyCode
+					sku
+					stockLevel
+					featuredAsset {
+						id
+						preview
+					}
+				}
+			}
+		}
+	}
+`;
+export const CreateFavoriteDocument = gql`
+	mutation createFavorite($id: ID!) {
+		createFavorite(input: { productId: $id }) {
+			id
+		}
+	}
+`;
+export const DeleteFavoriteDocument = gql`
+	mutation deleteFavorite($id: ID!) {
+		deleteFavorite(id: $id) {
+			__typename
+			message
+			result
+		}
+	}
+`;
 export const ApplyCouponCodeDocument = gql`
 	mutation applyCouponCode($couponCode: String!) {
 		applyCouponCode(couponCode: $couponCode) {
@@ -5922,6 +6305,26 @@ export const SearchDocument = gql`
 		}
 	}
 	${ListedProductFragmentDoc}
+`;
+export const ReviewDocument = gql`
+	query review($orderId: ID!, $productVariantId: ID!) {
+		review(orderId: $orderId, productVariantId: $productVariantId) {
+			id
+			rating
+		}
+	}
+`;
+export const CreateReviewDocument = gql`
+	mutation createReview($input: CreateReviewInput!) {
+		createReview(input: $input) {
+			id
+			rating
+			comment
+			approved
+			createdAt
+			updatedAt
+		}
+	}
 `;
 export type Requester<C = {}> = <R, V>(
 	doc: DocumentNode,
@@ -6199,6 +6602,33 @@ export function getSdk<C>(requester: Requester<C>) {
 				options
 			) as Promise<CreateCustomerAddressMutationMutation>;
 		},
+		favorite(variables: FavoriteQueryVariables, options?: C): Promise<FavoriteQuery> {
+			return requester<FavoriteQuery, FavoriteQueryVariables>(
+				FavoriteDocument,
+				variables,
+				options
+			) as Promise<FavoriteQuery>;
+		},
+		createFavorite(
+			variables: CreateFavoriteMutationVariables,
+			options?: C
+		): Promise<CreateFavoriteMutation> {
+			return requester<CreateFavoriteMutation, CreateFavoriteMutationVariables>(
+				CreateFavoriteDocument,
+				variables,
+				options
+			) as Promise<CreateFavoriteMutation>;
+		},
+		deleteFavorite(
+			variables: DeleteFavoriteMutationVariables,
+			options?: C
+		): Promise<DeleteFavoriteMutation> {
+			return requester<DeleteFavoriteMutation, DeleteFavoriteMutationVariables>(
+				DeleteFavoriteDocument,
+				variables,
+				options
+			) as Promise<DeleteFavoriteMutation>;
+		},
 		applyCouponCode(
 			variables: ApplyCouponCodeMutationVariables,
 			options?: C
@@ -6306,6 +6736,23 @@ export function getSdk<C>(requester: Requester<C>) {
 				variables,
 				options
 			) as Promise<SearchQuery>;
+		},
+		review(variables: ReviewQueryVariables, options?: C): Promise<ReviewQuery> {
+			return requester<ReviewQuery, ReviewQueryVariables>(
+				ReviewDocument,
+				variables,
+				options
+			) as Promise<ReviewQuery>;
+		},
+		createReview(
+			variables: CreateReviewMutationVariables,
+			options?: C
+		): Promise<CreateReviewMutation> {
+			return requester<CreateReviewMutation, CreateReviewMutationVariables>(
+				CreateReviewDocument,
+				variables,
+				options
+			) as Promise<CreateReviewMutation>;
 		},
 	};
 }

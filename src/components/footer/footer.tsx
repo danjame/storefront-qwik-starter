@@ -1,7 +1,7 @@
 import { component$, useContext } from '@qwik.dev/core';
 import { _ } from 'compiled-i18n';
 import { APP_STATE } from '~/constants';
-import GitIcon from '../icons/GitIcon';
+import { HighlightedButton } from '../buttons/HighlightedButton';
 
 export default component$(() => {
 	const collections = useContext(APP_STATE).collections.filter(
@@ -97,21 +97,18 @@ export default component$(() => {
 								aria-labelledby="email-subscription"
 							/>
 							<div class="mt-3 rounded-md sm:mt-0 sm:ml-3 sm:flex-shrink-0">
-								<button class="btn-primary" onClick$={() => {}}>
-									{_`Subscribe`}
-								</button>
+								<HighlightedButton onClick$={() => {}}>{_`Subscribe`}</HighlightedButton>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="mt-8 border-t pt-8">
+				<div class="mt-8 border-t pt-8 flex justify-end">
 					<a
-						class="flex items-center space-x-4 font-medium text-gray-500 hover:text-gray-700"
+						class="flex items-center space-x-4 font-medium text-gray-500 hover:text-gray-700 underline"
 						target="_blank"
-						href="https://github.com/vendure-ecommerce/storefront-qwik-starter"
+						href="/"
 					>
-						<GitIcon />
-						<span>github.com/vendure-ecommerce/storefront-qwik-starter</span>
+						<span>Terms & Conditions</span>
 					</a>
 				</div>
 			</div>

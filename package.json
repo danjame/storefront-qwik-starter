@@ -27,9 +27,9 @@
 		"start": "pnpm generate && vite --open --mode ssr",
 		"qwik": "qwik",
 		"generate-shop": "DOTENV_CONFIG_PATH=.env graphql-codegen -r dotenv/config --config codegen-shop.ts",
-		"generate-dev": "export IS_DEV=TRUE && pnpm generate-shop",
-		"generate-local": "export IS_LOCAL=TRUE && pnpm generate-shop",
-		"generate": "pnpm generate-shop"
+		"generate-dev": "export IS_DEV=TRUE && npm run generate-shop",
+		"generate-local": "export IS_LOCAL=TRUE && npm run generate-shop",
+		"generate": "npm run generate-shop"
 	},
 	"devDependencies": {
 		"@graphql-codegen/cli": "^6.0.0",
@@ -47,6 +47,7 @@
 		"autoprefixer": "10.4.21",
 		"compiled-i18n": "^1.2.1",
 		"concurrently": "9.2.1",
+		"dotenv-cli": "^11.0.0",
 		"eslint": "8.57.0",
 		"eslint-plugin-qwik": "2.0.0-beta.13",
 		"husky": "^9.1.7",

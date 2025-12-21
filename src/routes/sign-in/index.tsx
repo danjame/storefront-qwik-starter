@@ -32,15 +32,6 @@ export default component$(() => {
 
 			<div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
 				<div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-					<div class="mb-6 bg-yellow-50 border border-yellow-400 text-yellow-800 rounded p-4 text-center text-sm">
-						<p>Demo credentials</p>
-						<p>
-							Email address: <span class="font-bold">test@vendure.io</span>
-						</p>
-						<p>
-							Password: <span class="font-bold">test</span>
-						</p>
-					</div>
 					<div class="space-y-6">
 						<div>
 							<label class="block text-sm font-medium text-gray-700">Email address</label>
@@ -112,7 +103,7 @@ export default component$(() => {
 						)}
 						<div>
 							<button
-								class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+								class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none"
 								onClick$={login}
 							>
 								Sign in

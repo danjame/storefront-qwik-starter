@@ -1,8 +1,11 @@
-import { component$, useStore, useVisibleTask$ } from '@qwik.dev/core';
+import { $, component$, useSignal, useStore, useVisibleTask$ } from '@qwik.dev/core';
 import { useLocation } from '@qwik.dev/router';
 import { Image } from '~/components/image/image';
+import { Modal } from '~/components/modal/Modal';
+import ReviewForm from '~/components/review-form/ReviewForm';
 import { Order } from '~/generated/graphql';
 import { getOrderByCodeQuery } from '~/providers/shop/orders/order';
+import { createReviewMutation, getReviewQuery } from '~/providers/shop/reviews/reviews';
 import { formatDateTime, formatPrice } from '~/utils';
 
 export default component$(() => {
@@ -11,8 +14,42 @@ export default component$(() => {
 	} = useLocation();
 	const store = useStore<{ order?: Order }>({});
 
+	const reviewedByLineId = useStore<Record<string, boolean>>({});
 	useVisibleTask$(async () => {
 		store.order = await getOrderByCodeQuery(code);
+		if (!store.order) return;
+
+		const promises = store.order.lines.map((line) => getReviewQuery(store.order!.id, line.id));
+		const results = await Promise.all(promises);
+		store.order.lines.forEach((line, index) => {
+			reviewedByLineId[line.id] = !!results[index];
+		});
+	});
+
+	const visible = useSignal(false);
+	const selectedLineId = useSignal('');
+	const reviewForm = useStore({
+		rating: 0,
+		comment: '',
+	});
+
+	const onSubmit = $(() => {
+		if (store.order) {
+			createReviewMutation({
+				productVariantId: selectedLineId.value,
+				orderId: store.order.id,
+				...reviewForm,
+			}).then(() => {
+				visible.value = false;
+				window.location.reload();
+			});
+		}
+	});
+
+	const onCancel = $(() => {
+		visible.value = false;
+		reviewForm.rating = 0;
+		reviewForm.comment = '';
 	});
 
 	return store.order ? (
@@ -43,16 +80,16 @@ export default component$(() => {
 									<div>
 										<div class="flex justify-between text-base font-medium">
 											<h3>{line.productVariant.name}</h3>
-											<p class="ml-4">
+											<p class="ml-4 px-2">
 												{formatPrice(line.productVariant.price, store.order?.currencyCode || 'USD')}
 											</p>
 										</div>
 									</div>
 									<div class="flex-1 flex items-center justify-between text-sm text-gray-600">
 										<div class="flex space-x-4">
-											<div class="qty">1</div>
+											<div class="qty">{line.quantity}</div>
 										</div>
-										<div class="total">
+										<div class="total px-2">
 											<div>
 												{formatPrice(
 													line.productVariant.price * line.quantity,
@@ -61,6 +98,20 @@ export default component$(() => {
 											</div>
 										</div>
 									</div>
+									{store.order?.state === 'Delivered' && (
+										<div class="flex-1 flex items-end justify-end text-gray-600">
+											<button
+												class={`flex items-center justify-around bg-gray-100 border rounded-md py-1 px-2 text-sm font-medium text-black focus:outline-none ${reviewedByLineId[line.id] ? '' : 'hover:bg-gray-300'}`}
+												disabled={reviewedByLineId[line.id]}
+												onClick$={() => {
+													visible.value = true;
+													selectedLineId.value = line.id;
+												}}
+											>
+												{reviewedByLineId[line.id] ? 'Reviewed' : 'Review'}
+											</button>
+										</div>
+									)}
 								</div>
 							</li>
 						);
@@ -70,7 +121,7 @@ export default component$(() => {
 			<dl class="border-t mt-6 border-gray-200 py-6 space-y-6">
 				<div class="flex items-center justify-between">
 					<dt class="text-sm">Subtotal</dt>
-					<dd class="text-sm font-medium">
+					<dd class="text-sm font-medium px-2">
 						{formatPrice(store.order?.subTotal, store.order?.currencyCode || 'USD')}
 					</dd>
 				</div>
@@ -81,19 +132,19 @@ export default component$(() => {
 							(<span>Standard Shipping</span>)
 						</span>
 					</dt>
-					<dd class="text-sm font-medium">
+					<dd class="text-sm font-medium px-2">
 						{formatPrice(store.order?.shippingWithTax, store.order?.currencyCode || 'USD')}
 					</dd>
 				</div>
 				<div class="flex items-center justify-between">
 					<dt class="text-sm">Tax</dt>
-					<dd class="text-sm font-medium">
+					<dd class="text-sm font-medium px-2">
 						{formatPrice(store.order?.taxSummary[0].taxTotal, store.order?.currencyCode || 'USD')}
 					</dd>
 				</div>
 				<div class="flex items-center justify-between border-t border-gray-200 pt-6">
 					<dt class="text-base font-medium">Total</dt>
-					<dd class="text-base font-medium">
+					<dd class="text-base font-medium px-2">
 						{formatPrice(store.order?.totalWithTax, store.order?.currencyCode || 'USD')}
 					</dd>
 				</div>
@@ -105,6 +156,17 @@ export default component$(() => {
 				<p class="text-base font-medium">{store.order?.shippingAddress?.city}</p>
 				<p class="text-base font-medium">{store.order?.shippingAddress?.province}</p>
 			</div>
+			<Modal
+				title="Rate & Review"
+				open={visible.value}
+				onCancel$={onCancel}
+				onSubmit$={onSubmit}
+				showIcon={false}
+			>
+				<div q:slot="modalContent" class="w-full min-w-0">
+					<ReviewForm form={reviewForm} />
+				</div>
+			</Modal>
 		</div>
 	) : (
 		<div class="h-[100vh]" />

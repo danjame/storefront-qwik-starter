@@ -16,7 +16,7 @@ export default defineConfig(async (config) => {
 			qwikVite(),
 			tsconfigPaths(),
 			i18nPlugin({
-				locales: ['en', 'de', 'es'],
+				locales: ['en', 'de', 'es', 'pt'],
 			}),
 		],
 		preview: {
