@@ -1,5 +1,6 @@
 import { component$ } from '@qwik.dev/core';
 import { useNavigate } from '@qwik.dev/router';
+import { _ } from 'compiled-i18n';
 import { HighlightedButton } from '~/components/buttons/HighlightedButton';
 import { Order } from '~/generated/graphql';
 import { formatPrice } from '~/utils';
@@ -42,7 +43,7 @@ export default component$<IProps>(({ order }) => {
 						navigate(`/account/orders/${order?.code}`);
 					}}
 				>
-					Go to detail
+					{_`Go to detail`}
 				</HighlightedButton>
 			</div>
 		</div>

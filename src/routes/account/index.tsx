@@ -1,5 +1,6 @@
 import { $, component$, useContext, useSignal, useVisibleTask$ } from '@qwik.dev/core';
 import { isBrowser } from '@qwik.dev/core/build';
+import { _ } from 'compiled-i18n';
 import { Button } from '~/components/buttons/Button';
 import { HighlightedButton } from '~/components/buttons/HighlightedButton';
 import { ErrorMessage } from '~/components/error-message/ErrorMessage';
@@ -117,13 +118,11 @@ export default component$(() => {
 						<div class="flex flex-col items-center justify-center text-center">
 							{appState.customer?.phoneNumber && (
 								<div class="text-sm md:text-lg">
-									Phone:
-									<span class="font-bold px-2">{appState.customer?.phoneNumber}</span>
+									{_`Phone`}:<span class="font-bold px-2">{appState.customer?.phoneNumber}</span>
 								</div>
 							)}
 							<div class="text-sm md:text-lg">
-								Email:
-								<span class="font-bold px-2">{appState.customer?.emailAddress}</span>
+								{_`Email`}:<span class="font-bold px-2">{appState.customer?.emailAddress}</span>
 							</div>
 						</div>
 					</div>
@@ -132,7 +131,7 @@ export default component$(() => {
 			<div class="min-h-[24rem] rounded-lg p-4 space-y-4">
 				<Modal
 					open={showModal.value}
-					title="Confirm E-Mail address change"
+					title={_`Confirm E-Mail address change`}
 					onSubmit$={() => {
 						updateEmail(currentPassword.value, newEmail.value);
 					}}
@@ -144,10 +143,10 @@ export default component$(() => {
 						<ShieldCheckIcon forcedClass="h-10 w-10 text-primary-500" />
 					</div>
 					<div q:slot="modalContent" class="space-y-4">
-						<p>We will send a verification E-Mail to {newEmail.value}</p>
+						<p>{_`We will send a verification E-Mail to ${newEmail.value}`}</p>
 
 						<div class="space-y-1">
-							<label html-for="password">Confirm the change by entering your password:</label>
+							<label html-for="password">{_`Confirm the change by entering your password`}:</label>
 							<input
 								type="password"
 								name="password"
@@ -170,7 +169,7 @@ export default component$(() => {
 					<div class="max-w-3xl m-auto">
 						<div class="gap-4 grid grid-cols-1 md:grid-cols-2">
 							<div class="md:col-span-2 md:w-1/4">
-								<h3 class="text-sm text-gray-500">Title</h3>
+								<h3 class="text-sm text-gray-500">{_`Title`}</h3>
 								<input
 									type="text"
 									value={appState.customer?.title}
@@ -183,7 +182,7 @@ export default component$(() => {
 
 							<div>
 								<label html-for="firstName" class="text-sm text-gray-500">
-									First Name
+									{_`First Name`}
 								</label>
 								<input
 									type="text"
@@ -198,7 +197,7 @@ export default component$(() => {
 							</div>
 							<div>
 								<label html-for="lastName" class="text-sm text-gray-500">
-									Last Name
+									{_`Last Name`}
 								</label>
 								<input
 									type="text"
@@ -212,7 +211,7 @@ export default component$(() => {
 								/>
 							</div>
 							<div>
-								<h3 class="text-sm text-gray-500">E-Mail</h3>
+								<h3 class="text-sm text-gray-500">{_`Email`}</h3>
 								<input
 									type="email"
 									value={appState.customer?.emailAddress}
@@ -226,7 +225,7 @@ export default component$(() => {
 							</div>
 
 							<div>
-								<h3 class="text-sm text-gray-500">Phone Nr.</h3>
+								<h3 class="text-sm text-gray-500">{_`Phone`}</h3>
 								<input
 									type="tel"
 									value={appState.customer?.phoneNumber}
@@ -245,7 +244,7 @@ export default component$(() => {
 									updateCustomer();
 								}}
 							>
-								<CheckIcon /> &nbsp; Save
+								<CheckIcon /> &nbsp; {_`Save`}
 							</HighlightedButton>
 
 							<Button
@@ -253,7 +252,7 @@ export default component$(() => {
 									isEditing.value = false;
 								}}
 							>
-								<XMarkIcon forcedClass="w-4 h-4" /> &nbsp; Cancel
+								<XMarkIcon forcedClass="w-4 h-4" /> &nbsp; {_`Cancel`}
 							</Button>
 						</div>
 					</div>

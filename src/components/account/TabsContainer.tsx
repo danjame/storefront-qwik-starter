@@ -1,5 +1,6 @@
 import { Slot, component$ } from '@qwik.dev/core';
 import { useLocation } from '@qwik.dev/router';
+import { _ } from 'compiled-i18n';
 import HashtagIcon from '../icons/HashtagIcon';
 import MapPinIcon from '../icons/MapPinIcon';
 import ShoppingBagIcon from '../icons/ShoppingBagIcon';
@@ -14,28 +15,28 @@ export const TabsContainer = component$(() => {
 				<ul class="flex justify-center sm:grid-0 sm:flex sm:flex-wrap -mb-px text-sm font-medium text-center text-gray-500">
 					<Tab
 						Icon={UserCircleIcon}
-						text="Account details"
+						text={_`Account Details`}
 						href="/account"
 						isActive={location.url.pathname === '/account/'}
 					/>
 
 					<Tab
 						Icon={ShoppingBagIcon}
-						text="Purchase history"
+						text={_`Purchase History`}
 						href="/account/orders"
 						isActive={location.url.pathname.indexOf('orders') >= 0}
 					/>
 
 					<Tab
 						Icon={MapPinIcon}
-						text="Addresses"
+						text={_`Addresses`}
 						href="/account/address-book"
 						isActive={location.url.pathname.indexOf('address-book') >= 0}
 					/>
 
 					<Tab
 						Icon={HashtagIcon}
-						text="Password change"
+						text={_`Password Change`}
 						href="/account/password"
 						isActive={location.url.pathname.indexOf('password') >= 0}
 					/>

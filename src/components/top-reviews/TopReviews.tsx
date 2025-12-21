@@ -1,6 +1,7 @@
 import { component$ } from '@qwik.dev/core';
 import { _ } from 'compiled-i18n';
 import { Review } from '~/types';
+import { formatDateTime } from '~/utils';
 import StarIcon from '../icons/StarIcon';
 
 interface ReviewsProps {
@@ -43,7 +44,7 @@ export default component$<ReviewsProps>(({ reviews }) => {
 								dateTime={review.createdAt}
 								class="ml-4 border-l border-gray-200 pl-4 text-gray-500 lg:ml-0 lg:mt-2 lg:border-0 lg:pl-0"
 							>
-								{new Date(review.createdAt).toLocaleDateString()}
+								{formatDateTime(new Date(review.createdAt))}
 							</time>
 						</div>
 					</div>

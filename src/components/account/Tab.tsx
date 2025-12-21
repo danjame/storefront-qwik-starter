@@ -12,7 +12,7 @@ export const Tab = component$(({ Icon, text, href, isActive }: IProps) => {
 		<li>
 			<a
 				href={href}
-				class={`group w-full gap-x-2 max-w-[12rem] inline-flex items-center justify-around p-4 rounded-t-lg border-b-2 ${
+				class={`group w-full gap-x-2 max-w-[16rem] inline-flex items-center justify-around p-4 rounded-t-lg border-b-2 ${
 					isActive
 						? 'text-primary-500 border-primary-500'
 						: 'border-transparent hover:text-gray-600 hover:border-gray-300'

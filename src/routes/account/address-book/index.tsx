@@ -1,5 +1,6 @@
 import { component$, useContext, useSignal, useVisibleTask$ } from '@qwik.dev/core';
 import { useNavigate } from '@qwik.dev/router';
+import { _ } from 'compiled-i18n';
 import AddressCard from '~/components/account/AddressCard';
 import { HighlightedButton } from '~/components/buttons/HighlightedButton';
 import PlusIcon from '~/components/icons/PlusIcon';
@@ -70,7 +71,7 @@ export default component$(() => {
 						navigate('/account/address-book/add');
 					}}
 				>
-					<PlusIcon /> &nbsp; New Address
+					<PlusIcon /> &nbsp; {_`New Address`}
 				</HighlightedButton>
 			</div>
 		</div>

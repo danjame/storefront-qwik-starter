@@ -1,5 +1,6 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from '@qwik.dev/core';
 import { useLocation } from '@qwik.dev/router';
+import { _ } from 'compiled-i18n';
 import { Image } from '~/components/image/image';
 import { Modal } from '~/components/modal/Modal';
 import ReviewForm from '~/components/review-form/ReviewForm';
@@ -56,10 +57,10 @@ export default component$(() => {
 		<div class="max-w-6xl m-auto rounded-lg p-4 space-y-4 text-gray-900">
 			<div>
 				<h2 class="mb-2">
-					Order <span class="text-xl font-semibold">{store.order?.code}</span>
+					{_`Order`} <span class="text-xl font-semibold">{store.order?.code}</span>
 				</h2>
 				<p class="mb-4">
-					Placed on{' '}
+					{_`Placed on`}{' '}
 					<span class="text-xl font-semibold">{formatDateTime(store.order?.createdAt)}</span>
 				</p>
 				<ul class="divide-y divide-gray-200">
@@ -108,7 +109,7 @@ export default component$(() => {
 													selectedLineId.value = line.id;
 												}}
 											>
-												{reviewedByLineId[line.id] ? 'Reviewed' : 'Review'}
+												{reviewedByLineId[line.id] ? _`Reviewed` : _`Review`}
 											</button>
 										</div>
 									)}
@@ -120,16 +121,16 @@ export default component$(() => {
 			</div>
 			<dl class="border-t mt-6 border-gray-200 py-6 space-y-6">
 				<div class="flex items-center justify-between">
-					<dt class="text-sm">Subtotal</dt>
+					<dt class="text-sm">{_`Subtotal`}</dt>
 					<dd class="text-sm font-medium px-2">
 						{formatPrice(store.order?.subTotal, store.order?.currencyCode || 'USD')}
 					</dd>
 				</div>
 				<div class="flex items-center justify-between">
 					<dt class="text-sm">
-						Shipping{' '}
+						{_`Shipping`}{' '}
 						<span class="text-gray-600">
-							(<span>Standard Shipping</span>)
+							(<span>{_`Standard Shipping`}</span>)
 						</span>
 					</dt>
 					<dd class="text-sm font-medium px-2">
@@ -137,20 +138,20 @@ export default component$(() => {
 					</dd>
 				</div>
 				<div class="flex items-center justify-between">
-					<dt class="text-sm">Tax</dt>
+					<dt class="text-sm">{_`Tax`}</dt>
 					<dd class="text-sm font-medium px-2">
 						{formatPrice(store.order?.taxSummary[0].taxTotal, store.order?.currencyCode || 'USD')}
 					</dd>
 				</div>
 				<div class="flex items-center justify-between border-t border-gray-200 pt-6">
-					<dt class="text-base font-medium">Total</dt>
+					<dt class="text-base font-medium">{_`Total`}</dt>
 					<dd class="text-base font-medium px-2">
 						{formatPrice(store.order?.totalWithTax, store.order?.currencyCode || 'USD')}
 					</dd>
 				</div>
 			</dl>
 			<div class="w-full bg-gray-100 p-8">
-				<p class="mb-4 text-gray-600">Shipping Address</p>
+				<p class="mb-4 text-gray-600">{_`Shipping Address`}</p>
 				<p class="text-base font-medium">{store.order?.shippingAddress?.fullName}</p>
 				<p class="text-base font-medium">{store.order?.shippingAddress?.streetLine1}</p>
 				<p class="text-base font-medium">{store.order?.shippingAddress?.city}</p>

@@ -7,6 +7,7 @@ import {
 	useTask$,
 	useVisibleTask$,
 } from '@qwik.dev/core';
+import { _ } from 'compiled-i18n';
 import { APP_STATE, CUSTOMER_NOT_DEFINED_ID } from '~/constants';
 import { Address, CreateAddressInput, CreateCustomerInput } from '~/generated/graphql';
 import { getActiveCustomerAddressesQuery } from '~/providers/shop/customer/customer';
@@ -15,7 +16,6 @@ import { isActiveCustomerValid, isShippingAddressValid } from '~/utils';
 import AddressForm from '../address-form/AddressForm';
 import LockClosedIcon from '../icons/LockClosedIcon';
 import ShippingMethodSelector from '../shipping-method-selector/ShippingMethodSelector';
-import { _ } from 'compiled-i18n';
 
 type IProps = {
 	onForward$: QRL<
@@ -115,7 +115,7 @@ export default component$<IProps>(({ onForward$ }) => {
 					</div>
 					<div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
 						<div>
-							<label class="block text-sm font-medium text-gray-700">{_`First name`}</label>
+							<label class="block text-sm font-medium text-gray-700">{_`First Name`}</label>
 							<div class="mt-1">
 								<input
 									type="text"
@@ -130,7 +130,7 @@ export default component$<IProps>(({ onForward$ }) => {
 						</div>
 
 						<div>
-							<label class="block text-sm font-medium text-gray-700">{_`Last name`}</label>
+							<label class="block text-sm font-medium text-gray-700">{_`Last Name`}</label>
 							<div class="mt-1">
 								<input
 									type="text"

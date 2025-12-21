@@ -141,7 +141,7 @@ export default component$(() => {
 						</div>
 						<div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
 							<div class="">
-								<h3 class="sr-only">Description</h3>
+								<h3 class="sr-only">{_`Description`}</h3>
 								<div
 									class="text-base text-gray-700"
 									dangerouslySetInnerHTML={productSignal.value.description}
@@ -149,7 +149,7 @@ export default component$(() => {
 							</div>
 							{1 < productSignal.value.variants.length && (
 								<div class="mt-4">
-									<label class="block text-sm font-medium text-gray-700">Select option</label>
+									<label class="block text-sm font-medium text-gray-700">{_`Select option`}</label>
 									<select
 										class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
 										value={selectedVariantIdSignal.value}

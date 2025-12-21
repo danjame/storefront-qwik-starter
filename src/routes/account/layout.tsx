@@ -1,4 +1,5 @@
 import { Slot, component$, useContext, useVisibleTask$ } from '@qwik.dev/core';
+import { _ } from 'compiled-i18n';
 import { TabsContainer } from '~/components/account/TabsContainer';
 import { APP_STATE } from '~/constants';
 import { getActiveCustomerQuery } from '~/providers/shop/customer/customer';
@@ -27,7 +28,7 @@ export default component$(() => {
 		<div class="px-4 min-h-screen">
 			<div class="max-w-6xl m-auto flex items-baseline justify-between mb-8">
 				<p class="text-gray-700 text-2xl mt-8 mr-4">
-					Welcome back, {fullNameWithTitle(appState.customer)}
+					{_`Welcome back`}, {fullNameWithTitle(appState.customer)}
 				</p>
 			</div>
 			<div class="flex justify-center">

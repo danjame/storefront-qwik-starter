@@ -1,5 +1,6 @@
 import { $, component$, useContext, useSignal } from '@qwik.dev/core';
 import { useNavigate } from '@qwik.dev/router';
+import { _ } from 'compiled-i18n';
 import { HighlightedButton } from '~/components/buttons/HighlightedButton';
 import { ErrorMessage } from '~/components/error-message/ErrorMessage';
 import CheckIcon from '~/components/icons/CheckIcon';
@@ -63,7 +64,7 @@ export default component$(() => {
 		<div class="max-w-6xl m-auto rounded-lg p-4 space-y-4 flex justify-center">
 			<form class="bg-white shadow-lg rounded-lg w-[20rem] py-4 px-6">
 				<div class="p-4">
-					<h3 class="text-sm text-gray-500">Current Password</h3>
+					<h3 class="text-sm text-gray-500">{_`Current Password`}</h3>
 					<input
 						type="password"
 						onChange$={(_, el) => {
@@ -74,7 +75,7 @@ export default component$(() => {
 					/>
 				</div>
 				<div class="p-4">
-					<h3 class="text-sm text-gray-500">New Password</h3>
+					<h3 class="text-sm text-gray-500">{_`New Password`}</h3>
 					<input
 						type="password"
 						onChange$={(_, el) => {
@@ -85,7 +86,7 @@ export default component$(() => {
 					/>
 				</div>
 				<div class="p-4">
-					<h3 class="text-sm text-gray-500">Confirm Password</h3>
+					<h3 class="text-sm text-gray-500">{_`Confirm Password`}</h3>
 					<input
 						type="password"
 						onChange$={(_, el) => {
@@ -97,7 +98,7 @@ export default component$(() => {
 				</div>
 				<div class="flex gap-x-4 p-4 justify-between">
 					<HighlightedButton onClick$={updatePassword}>
-						<CheckIcon /> &nbsp; Save
+						<CheckIcon /> &nbsp; {_`Save`}
 					</HighlightedButton>
 					<div>
 						<button preventdefault:click onClick$={togglePasswordFields}>
