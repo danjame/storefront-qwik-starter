@@ -4558,6 +4558,7 @@ union ResetPasswordResult =
 
 type Review implements Node {
 	approved: Boolean!
+	author: Customer!
 	comment: String!
 	createdAt: DateTime!
 	id: ID!

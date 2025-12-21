@@ -3256,6 +3256,7 @@ export type ResetPasswordResult =
 export type Review = Node & {
 	__typename?: 'Review';
 	approved: Scalars['Boolean']['output'];
+	author: Customer;
 	comment: Scalars['String']['output'];
 	createdAt: Scalars['DateTime']['output'];
 	id: Scalars['ID']['output'];
@@ -5592,6 +5593,33 @@ export type ReviewQuery = {
 	review?: { __typename?: 'Review'; id: string; rating: number } | null;
 };
 
+export type ReviewsQueryVariables = Exact<{
+	productId: Scalars['ID']['input'];
+	options?: InputMaybe<ReviewListOptions>;
+}>;
+
+export type ReviewsQuery = {
+	__typename?: 'Query';
+	reviews: {
+		__typename?: 'ReviewList';
+		totalItems: number;
+		items: Array<{
+			__typename?: 'Review';
+			id: string;
+			rating: number;
+			comment: string;
+			approved: boolean;
+			createdAt: any;
+			author: {
+				__typename?: 'Customer';
+				title?: string | null;
+				firstName: string;
+				lastName: string;
+			};
+		}>;
+	};
+};
+
 export type CreateReviewMutationVariables = Exact<{
 	input: CreateReviewInput;
 }>;
@@ -5604,8 +5632,6 @@ export type CreateReviewMutation = {
 		rating: number;
 		comment: string;
 		approved: boolean;
-		createdAt: any;
-		updatedAt: any;
 	};
 };
 
@@ -6314,6 +6340,25 @@ export const ReviewDocument = gql`
 		}
 	}
 `;
+export const ReviewsDocument = gql`
+	query reviews($productId: ID!, $options: ReviewListOptions) {
+		reviews(productId: $productId, options: $options) {
+			totalItems
+			items {
+				id
+				rating
+				comment
+				approved
+				author {
+					title
+					firstName
+					lastName
+				}
+				createdAt
+			}
+		}
+	}
+`;
 export const CreateReviewDocument = gql`
 	mutation createReview($input: CreateReviewInput!) {
 		createReview(input: $input) {
@@ -6321,8 +6366,6 @@ export const CreateReviewDocument = gql`
 			rating
 			comment
 			approved
-			createdAt
-			updatedAt
 		}
 	}
 `;
@@ -6743,6 +6786,13 @@ export function getSdk<C>(requester: Requester<C>) {
 				variables,
 				options
 			) as Promise<ReviewQuery>;
+		},
+		reviews(variables: ReviewsQueryVariables, options?: C): Promise<ReviewsQuery> {
+			return requester<ReviewsQuery, ReviewsQueryVariables>(
+				ReviewsDocument,
+				variables,
+				options
+			) as Promise<ReviewsQuery>;
 		},
 		createReview(
 			variables: CreateReviewMutationVariables,

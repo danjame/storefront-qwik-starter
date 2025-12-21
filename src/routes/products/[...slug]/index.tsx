@@ -25,7 +25,8 @@ import {
 } from '~/providers/shop/favorites/favorites';
 import { addItemToOrderMutation } from '~/providers/shop/orders/order';
 import { getProductBySlug } from '~/providers/shop/products/products';
-import { Variant } from '~/types';
+import { getReviewsQuery } from '~/providers/shop/reviews/reviews';
+import { Review, Variant } from '~/types';
 import { cleanUpParams, generateDocumentHead, isEnvVariableEnabled } from '~/utils';
 
 export const useProductLoader = routeLoader$(async ({ params }) => {
@@ -65,9 +66,14 @@ export default component$(() => {
 	});
 
 	const favoriteId = useSignal<string | undefined>(undefined);
+	const reviews = useSignal<Review[]>([]);
 	useVisibleTask$(() => {
 		getFavoriteQuery(productSignal.value.id).then((fav) => {
 			favoriteId.value = fav?.id;
+		});
+
+		getReviewsQuery(productSignal.value.id).then((res) => {
+			reviews.value = res.items;
 		});
 	});
 
@@ -246,7 +252,7 @@ export default component$(() => {
 			</div>
 			{isEnvVariableEnabled('VITE_SHOW_REVIEWS') && (
 				<div class="mt-24">
-					<TopReviews />
+					<TopReviews reviews={reviews.value} />
 				</div>
 			)}
 		</div>
