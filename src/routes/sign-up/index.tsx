@@ -1,4 +1,5 @@
 import { $, component$, useSignal } from '@qwik.dev/core';
+import { _ } from 'compiled-i18n';
 import XCircleIcon from '~/components/icons/XCircleIcon';
 import { registerCustomerAccountMutation } from '~/providers/shop/account/account';
 import { isEnvVariableEnabled } from '~/utils';
@@ -43,11 +44,11 @@ export default component$(() => {
 	return (
 		<div class="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
 			<div class="sm:mx-auto sm:w-full sm:max-w-md">
-				<h2 class="mt-6 text-center text-3xl text-gray-900">Create a new account</h2>
+				<h2 class="mt-6 text-center text-3xl text-gray-900">{_`Create a new account`}</h2>
 				<p class="mt-2 text-center text-sm text-gray-600">
-					Or{' '}
+					{_`Or`}{' '}
 					<a href="/sign-in" class="font-medium text-primary-600 hover:text-primary-500">
-						login to your existing account
+						{_`login to your existing account`}
 					</a>
 				</p>
 			</div>
@@ -57,8 +58,7 @@ export default component$(() => {
 					{successSignal.value && (
 						<div class="mb-6 bg-yellow-50 border border-yellow-400 text-yellow-800 rounded p-4 text-center text-sm">
 							<p>
-								Account registration successful! We sent email verification to {email.value}, you
-								must verify before logging in.
+								{_`Account registration successful! We sent email verification to ${email.value}, you must verify before logging in.`}
 							</p>
 						</div>
 					)}
@@ -72,7 +72,7 @@ export default component$(() => {
 					)}
 					<div class="space-y-6">
 						<div>
-							<label class="block text-sm font-medium text-gray-700">Email address</label>
+							<label class="block text-sm font-medium text-gray-700">{_`Email address`}</label>
 							<div class="mt-1">
 								<input
 									type="email"
@@ -86,7 +86,7 @@ export default component$(() => {
 						</div>
 
 						<div>
-							<label class="block text-sm font-medium text-gray-700">Firstname</label>
+							<label class="block text-sm font-medium text-gray-700">{_`First Name`}</label>
 							<div class="mt-1">
 								<input
 									type="text"
@@ -99,7 +99,7 @@ export default component$(() => {
 						</div>
 
 						<div>
-							<label class="block text-sm font-medium text-gray-700">Lastname</label>
+							<label class="block text-sm font-medium text-gray-700">{_`Last Name`}</label>
 							<div class="mt-1">
 								<input
 									type="text"
@@ -112,7 +112,7 @@ export default component$(() => {
 						</div>
 
 						<div>
-							<label class="block text-sm font-medium text-gray-700">Password</label>
+							<label class="block text-sm font-medium text-gray-700">{_`Password`}</label>
 							<div class="mt-1">
 								<input
 									type="password"
@@ -125,7 +125,7 @@ export default component$(() => {
 						</div>
 
 						<div>
-							<label class="block text-sm font-medium text-gray-700">Repeat Password</label>
+							<label class="block text-sm font-medium text-gray-700">{_`Confirm Password`}</label>
 							<div class="mt-1">
 								<input
 									type="password"
@@ -145,7 +145,7 @@ export default component$(() => {
 									</div>
 									<div class="ml-3">
 										<h3 class="text-sm font-medium text-red-800">
-											We ran into a problem signing you up!
+											{_`We ran into a problem signing you up!`}
 										</h3>
 										<p class="text-sm text-red-700 mt-2">{error.value}</p>
 									</div>
@@ -157,7 +157,7 @@ export default component$(() => {
 								class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none"
 								onClick$={registerCustomer}
 							>
-								Sign up
+								{_`Sign Up`}
 							</button>
 						</div>
 					</div>

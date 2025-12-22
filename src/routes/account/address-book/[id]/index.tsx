@@ -120,7 +120,7 @@ export default component$(() => {
 								</div>
 								<div class="ml-3">
 									<h3 class="text-sm font-medium text-red-800">
-										{_`We ran into a problem updating your address`}!
+										{_`We ran into a problem updating your address!`}
 									</h3>
 
 									{Object.entries(action?.value?.fieldErrors || {}).map(([field, error], index) => (
