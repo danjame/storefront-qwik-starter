@@ -1,6 +1,7 @@
 import { $, component$, noSerialize, useContext, useStore, useVisibleTask$ } from '@qwik.dev/core';
 import { useLocation } from '@qwik.dev/router';
 import { Stripe, StripeElements, loadStripe } from '@stripe/stripe-js';
+import { _ } from 'compiled-i18n';
 import { APP_STATE } from '~/constants';
 import { ENV_VARIABLES } from '~/env';
 import { createStripePaymentIntentMutation } from '~/providers/shop/checkout/checkout';
@@ -46,7 +47,7 @@ export default component$(() => {
 							<XCircleIcon />
 						</div>
 						<div class="ml-3">
-							<h3 class="text-sm font-medium text-red-800">We ran into a problem with payment!</h3>
+							<h3 class="text-sm font-medium text-red-800">{_`We ran into a problem with payment!`}</h3>
 							<p class="text-sm text-red-700 mt-2">{store.error}</p>
 						</div>
 					</div>
@@ -57,25 +58,29 @@ export default component$(() => {
 				class="flex px-6 bg-primary-600 hover:bg-primary-700 items-center justify-center space-x-2 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
 				disabled={!_stripe}
 				onClick$={$(async () => {
-					const result = await store.stripeElements?.submit();
-					if (!result?.error) {
-						const result = await store.resolvedStripe?.confirmPayment({
-							elements: store.stripeElements,
-							clientSecret: store.clientSecret,
-							confirmParams: {
-								return_url: `${baseUrl}/checkout/confirmation/${appState.activeOrder.code}`,
-							},
-						});
-						if (result?.error) {
-							store.error = result.error.message as string;
-						}
-					} else {
-						store.error = result.error.message as string;
+					const submitResult = await store.stripeElements?.submit();
+					if (submitResult?.error) {
+						store.error = submitResult.error.message as string;
+						return;
+					}
+
+					const confirmResult = await store.resolvedStripe?.confirmPayment({
+						elements: store.stripeElements,
+						clientSecret: store.clientSecret,
+						confirmParams: {
+							return_url: `${baseUrl}/checkout/confirmation/${appState.activeOrder.code}`,
+						},
+					});
+					if (confirmResult?.error) {
+						store.error = confirmResult.error.message as string;
+						return;
 					}
 				})}
 			>
 				<CreditCardIcon />
-				<span>Pay with Stripe</span>
+				<span>
+					{_`Pay ${(appState.activeOrder.totalWithTax / 100).toFixed(2)} ${appState.activeOrder.currencyCode}`}
+				</span>
 			</button>
 		</div>
 	);

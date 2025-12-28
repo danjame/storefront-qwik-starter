@@ -1,10 +1,10 @@
 import { $, component$, QRL, useSignal, useVisibleTask$ } from '@qwik.dev/core';
+import { _ } from 'compiled-i18n';
 import { getEligiblePaymentMethodsQuery } from '~/providers/shop/checkout/checkout';
 import { EligiblePaymentMethods } from '~/types';
 import CreditCardIcon from '../icons/CreditCardIcon';
 import BraintreePayment from './BraintreePayment';
 import StripePayment from './StripePayment';
-import { _ } from 'compiled-i18n';
 
 export default component$<{ onForward$: QRL<() => void> }>(({ onForward$ }) => {
 	const paymentMethods = useSignal<EligiblePaymentMethods[]>();
