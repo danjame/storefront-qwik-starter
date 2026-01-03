@@ -153,6 +153,17 @@ gql`
 						}
 						productVariant {
 							name
+							product {
+								name
+							}
+						}
+					}
+					payments {
+						state
+						amount
+						refunds {
+							state
+							total
 						}
 					}
 				}

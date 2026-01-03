@@ -13,7 +13,15 @@ export const getReviewQuery = async (orderId: string, productVariantId: string) 
 
 export const getReviewsQuery = async (productId: string) => {
 	return shopSdk
-		.reviews({ productId, options: { sort: { createdAt: 'DESC' } } })
+		.reviews({
+			productId,
+			options: {
+				sort: { createdAt: 'DESC' },
+				filter: {
+					approved: { eq: true },
+				},
+			},
+		})
 		.then((res: ReviewsQuery) => res.reviews);
 };
 

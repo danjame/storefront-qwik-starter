@@ -2834,7 +2834,7 @@ type Mutation {
 	createCustomerAddress(input: CreateAddressInput!): Address!
 	createFavorite(input: CreateFavoriteInput!): Favorite!
 	createReview(input: CreateReviewInput!): Review!
-	createStripePaymentIntent: String
+	createStripePaymentIntent: String!
 
 	"""
 	Delete an existing Address

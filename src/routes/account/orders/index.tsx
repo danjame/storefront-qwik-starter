@@ -12,7 +12,7 @@ export default component$(() => {
 
 	return activeCustomerOrdersSignal.value ? (
 		<div class="max-w-6xl m-auto rounded-lg p-4 space-y-4">
-			<div class="flex flex-wrap gap-6 justify-evenly">
+			<div class="flex flex-col gap-4 justify-evenly">
 				{(activeCustomerOrdersSignal.value?.orders?.items || []).map((order: Order) => (
 					<div key={order.id}>
 						<OrderCard order={order} />

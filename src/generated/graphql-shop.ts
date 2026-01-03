@@ -1845,7 +1845,7 @@ export type Mutation = {
 	createCustomerAddress: Address;
 	createFavorite: Favorite;
 	createReview: Review;
-	createStripePaymentIntent?: Maybe<Scalars['String']['output']>;
+	createStripePaymentIntent: Scalars['String']['output'];
 	/** Delete an existing Address */
 	deleteCustomerAddress: Success;
 	deleteFavorite: DeletionResponse;
@@ -4099,7 +4099,7 @@ export type CreateStripePaymentIntentMutationVariables = Exact<{ [key: string]: 
 
 export type CreateStripePaymentIntentMutation = {
 	__typename?: 'Mutation';
-	createStripePaymentIntent?: string | null;
+	createStripePaymentIntent: string;
 };
 
 export type GenerateBraintreeClientTokenQueryVariables = Exact<{
@@ -4258,8 +4258,18 @@ export type ActiveCustomerOrdersQuery = {
 				lines: Array<{
 					__typename?: 'OrderLine';
 					featuredAsset?: { __typename?: 'Asset'; preview: string } | null;
-					productVariant: { __typename?: 'ProductVariant'; name: string };
+					productVariant: {
+						__typename?: 'ProductVariant';
+						name: string;
+						product: { __typename?: 'Product'; name: string };
+					};
 				}>;
+				payments?: Array<{
+					__typename?: 'Payment';
+					state: string;
+					amount: any;
+					refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+				}> | null;
 			}>;
 		};
 	} | null;
@@ -6080,6 +6090,17 @@ export const ActiveCustomerOrdersDocument = gql`
 						}
 						productVariant {
 							name
+							product {
+								name
+							}
+						}
+					}
+					payments {
+						state
+						amount
+						refunds {
+							state
+							total
 						}
 					}
 				}
