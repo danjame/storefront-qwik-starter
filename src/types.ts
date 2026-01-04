@@ -108,6 +108,7 @@ export type Line = {
 	unitPriceWithTax: number;
 	linePriceWithTax: number;
 	quantity: number;
+	orderPlacedQuantity: number;
 	featuredAsset: FeaturedAsset;
 	productVariant: ProductVariant;
 };

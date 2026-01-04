@@ -1,4 +1,5 @@
 import { component$ } from '@qwik.dev/core';
+import { _ } from 'compiled-i18n';
 import { Order, Payment, Refund } from '~/generated/graphql';
 import { formatPrice } from '~/utils';
 import { Image } from '../image/image';
@@ -22,7 +23,7 @@ export default component$<IProps>(({ order }) => {
 			<div class="w-full p-6 bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition duration-300 flex flex-col hover:shadow-2xl hover:bg-gray-50 cursor-pointer">
 				<div class="flex justify-between items-center mb-4">
 					<p class="text-sm font-medium">
-						Order: <span class="ml-2 text-lg font-semibold">{order?.code}</span>
+						{_`Order`}: <span class="ml-2 text-lg font-semibold">{order?.code}</span>
 					</p>
 					<div class="flex items-center gap-2">
 						<span
@@ -65,7 +66,7 @@ export default component$<IProps>(({ order }) => {
 						{refunded && refunded > 0 ? (
 							<span
 								class="absolute bottom-0 right-0 bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded-full font-semibold tracking-wide whitespace-nowrap"
-								title="Refunded"
+								title={_`Refunded`}
 							>
 								+ {formatPrice(refunded, order?.currencyCode || 'USD')}
 							</span>

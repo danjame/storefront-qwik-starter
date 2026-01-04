@@ -3987,6 +3987,7 @@ export type AddPaymentToOrderMutation = {
 					unitPriceWithTax: any;
 					linePriceWithTax: any;
 					quantity: number;
+					orderPlacedQuantity: number;
 					featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 					productVariant: {
 						__typename?: 'ProductVariant';
@@ -3996,6 +3997,12 @@ export type AddPaymentToOrderMutation = {
 						product: { __typename?: 'Product'; id: string; slug: string };
 					};
 				}>;
+				payments?: Array<{
+					__typename?: 'Payment';
+					state: string;
+					amount: any;
+					refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+				}> | null;
 		  }
 		| { __typename?: 'OrderPaymentStateError'; errorCode: ErrorCode; message: string }
 		| { __typename?: 'OrderStateTransitionError'; errorCode: ErrorCode; message: string }
@@ -4066,6 +4073,7 @@ export type TransitionOrderToStateMutation = {
 					unitPriceWithTax: any;
 					linePriceWithTax: any;
 					quantity: number;
+					orderPlacedQuantity: number;
 					featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 					productVariant: {
 						__typename?: 'ProductVariant';
@@ -4075,6 +4083,12 @@ export type TransitionOrderToStateMutation = {
 						product: { __typename?: 'Product'; id: string; slug: string };
 					};
 				}>;
+				payments?: Array<{
+					__typename?: 'Payment';
+					state: string;
+					amount: any;
+					refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+				}> | null;
 		  }
 		| { __typename?: 'OrderStateTransitionError'; errorCode: ErrorCode; message: string }
 		| null;
@@ -4693,6 +4707,7 @@ export type ApplyCouponCodeMutation = {
 					unitPriceWithTax: any;
 					linePriceWithTax: any;
 					quantity: number;
+					orderPlacedQuantity: number;
 					featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 					productVariant: {
 						__typename?: 'ProductVariant';
@@ -4702,6 +4717,12 @@ export type ApplyCouponCodeMutation = {
 						product: { __typename?: 'Product'; id: string; slug: string };
 					};
 				}>;
+				payments?: Array<{
+					__typename?: 'Payment';
+					state: string;
+					amount: any;
+					refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+				}> | null;
 		  };
 };
 
@@ -4767,6 +4788,7 @@ export type RemoveCouponCodeMutation = {
 			unitPriceWithTax: any;
 			linePriceWithTax: any;
 			quantity: number;
+			orderPlacedQuantity: number;
 			featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 			productVariant: {
 				__typename?: 'ProductVariant';
@@ -4776,6 +4798,12 @@ export type RemoveCouponCodeMutation = {
 				product: { __typename?: 'Product'; id: string; slug: string };
 			};
 		}>;
+		payments?: Array<{
+			__typename?: 'Payment';
+			state: string;
+			amount: any;
+			refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+		}> | null;
 	} | null;
 };
 
@@ -4843,6 +4871,7 @@ export type SetOrderShippingAddressMutation = {
 					unitPriceWithTax: any;
 					linePriceWithTax: any;
 					quantity: number;
+					orderPlacedQuantity: number;
 					featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 					productVariant: {
 						__typename?: 'ProductVariant';
@@ -4852,6 +4881,12 @@ export type SetOrderShippingAddressMutation = {
 						product: { __typename?: 'Product'; id: string; slug: string };
 					};
 				}>;
+				payments?: Array<{
+					__typename?: 'Payment';
+					state: string;
+					amount: any;
+					refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+				}> | null;
 		  };
 };
 
@@ -4922,6 +4957,7 @@ export type SetCustomerForOrderMutation = {
 					unitPriceWithTax: any;
 					linePriceWithTax: any;
 					quantity: number;
+					orderPlacedQuantity: number;
 					featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 					productVariant: {
 						__typename?: 'ProductVariant';
@@ -4931,6 +4967,12 @@ export type SetCustomerForOrderMutation = {
 						product: { __typename?: 'Product'; id: string; slug: string };
 					};
 				}>;
+				payments?: Array<{
+					__typename?: 'Payment';
+					state: string;
+					amount: any;
+					refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+				}> | null;
 		  };
 };
 
@@ -5000,6 +5042,7 @@ export type AddItemToOrderMutation = {
 					unitPriceWithTax: any;
 					linePriceWithTax: any;
 					quantity: number;
+					orderPlacedQuantity: number;
 					featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 					productVariant: {
 						__typename?: 'ProductVariant';
@@ -5009,6 +5052,12 @@ export type AddItemToOrderMutation = {
 						product: { __typename?: 'Product'; id: string; slug: string };
 					};
 				}>;
+				payments?: Array<{
+					__typename?: 'Payment';
+					state: string;
+					amount: any;
+					refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+				}> | null;
 		  }
 		| { __typename?: 'OrderInterceptorError'; errorCode: ErrorCode; message: string }
 		| { __typename?: 'OrderLimitError'; errorCode: ErrorCode; message: string }
@@ -5080,6 +5129,7 @@ export type SetOrderShippingMethodMutation = {
 					unitPriceWithTax: any;
 					linePriceWithTax: any;
 					quantity: number;
+					orderPlacedQuantity: number;
 					featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 					productVariant: {
 						__typename?: 'ProductVariant';
@@ -5089,6 +5139,12 @@ export type SetOrderShippingMethodMutation = {
 						product: { __typename?: 'Product'; id: string; slug: string };
 					};
 				}>;
+				payments?: Array<{
+					__typename?: 'Payment';
+					state: string;
+					amount: any;
+					refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+				}> | null;
 		  }
 		| { __typename?: 'OrderModificationError'; errorCode: ErrorCode; message: string };
 };
@@ -5149,6 +5205,7 @@ export type OrderDetailFragment = {
 		unitPriceWithTax: any;
 		linePriceWithTax: any;
 		quantity: number;
+		orderPlacedQuantity: number;
 		featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 		productVariant: {
 			__typename?: 'ProductVariant';
@@ -5158,6 +5215,12 @@ export type OrderDetailFragment = {
 			product: { __typename?: 'Product'; id: string; slug: string };
 		};
 	}>;
+	payments?: Array<{
+		__typename?: 'Payment';
+		state: string;
+		amount: any;
+		refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+	}> | null;
 };
 
 export type AdjustOrderLineMutationVariables = Exact<{
@@ -5226,6 +5289,7 @@ export type AdjustOrderLineMutation = {
 					unitPriceWithTax: any;
 					linePriceWithTax: any;
 					quantity: number;
+					orderPlacedQuantity: number;
 					featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 					productVariant: {
 						__typename?: 'ProductVariant';
@@ -5235,6 +5299,12 @@ export type AdjustOrderLineMutation = {
 						product: { __typename?: 'Product'; id: string; slug: string };
 					};
 				}>;
+				payments?: Array<{
+					__typename?: 'Payment';
+					state: string;
+					amount: any;
+					refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+				}> | null;
 		  }
 		| { __typename?: 'OrderInterceptorError'; errorCode: ErrorCode; message: string }
 		| { __typename?: 'OrderLimitError'; errorCode: ErrorCode; message: string }
@@ -5304,6 +5374,7 @@ export type RemoveOrderLineMutation = {
 					unitPriceWithTax: any;
 					linePriceWithTax: any;
 					quantity: number;
+					orderPlacedQuantity: number;
 					featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 					productVariant: {
 						__typename?: 'ProductVariant';
@@ -5313,6 +5384,12 @@ export type RemoveOrderLineMutation = {
 						product: { __typename?: 'Product'; id: string; slug: string };
 					};
 				}>;
+				payments?: Array<{
+					__typename?: 'Payment';
+					state: string;
+					amount: any;
+					refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+				}> | null;
 		  }
 		| { __typename?: 'OrderInterceptorError'; errorCode: ErrorCode; message: string }
 		| { __typename?: 'OrderModificationError'; errorCode: ErrorCode; message: string };
@@ -5378,6 +5455,7 @@ export type ActiveOrderQuery = {
 			unitPriceWithTax: any;
 			linePriceWithTax: any;
 			quantity: number;
+			orderPlacedQuantity: number;
 			featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 			productVariant: {
 				__typename?: 'ProductVariant';
@@ -5387,6 +5465,12 @@ export type ActiveOrderQuery = {
 				product: { __typename?: 'Product'; id: string; slug: string };
 			};
 		}>;
+		payments?: Array<{
+			__typename?: 'Payment';
+			state: string;
+			amount: any;
+			refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+		}> | null;
 	} | null;
 };
 
@@ -5452,6 +5536,7 @@ export type OrderByCodeQuery = {
 			unitPriceWithTax: any;
 			linePriceWithTax: any;
 			quantity: number;
+			orderPlacedQuantity: number;
 			featuredAsset?: { __typename?: 'Asset'; id: string; preview: string } | null;
 			productVariant: {
 				__typename?: 'ProductVariant';
@@ -5461,6 +5546,12 @@ export type OrderByCodeQuery = {
 				product: { __typename?: 'Product'; id: string; slug: string };
 			};
 		}>;
+		payments?: Array<{
+			__typename?: 'Payment';
+			state: string;
+			amount: any;
+			refunds: Array<{ __typename?: 'Refund'; state: string; total: any }>;
+		}> | null;
 	} | null;
 };
 
@@ -5728,6 +5819,7 @@ export const OrderDetailFragmentDoc = gql`
 			unitPriceWithTax
 			linePriceWithTax
 			quantity
+			orderPlacedQuantity
 			featuredAsset {
 				id
 				preview
@@ -5740,6 +5832,14 @@ export const OrderDetailFragmentDoc = gql`
 					id
 					slug
 				}
+			}
+		}
+		payments {
+			state
+			amount
+			refunds {
+				state
+				total
 			}
 		}
 	}

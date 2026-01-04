@@ -193,6 +193,7 @@ gql`
 			unitPriceWithTax
 			linePriceWithTax
 			quantity
+			orderPlacedQuantity
 			featuredAsset {
 				id
 				preview
@@ -205,6 +206,14 @@ gql`
 					id
 					slug
 				}
+			}
+		}
+		payments {
+			state
+			amount
+			refunds {
+				state
+				total
 			}
 		}
 	}
